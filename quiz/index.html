@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QuizCraft — Academic Quiz Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#18251f; --muted:#68756e; --paper:#fffdf7; --canvas:#f2f1e9; --line:#dfe3d8; --lime:#d6f26a; --coral:#ff8d72; --blue:#bddbf4; --white:#fffefa; }
+    * { box-sizing:border-box; } body { margin:0; background:var(--canvas); color:var(--ink); font-family:Manrope, sans-serif; }
+    .shell { max-width:1240px; margin:auto; padding:28px 24px 64px; }
+    header { display:flex; justify-content:space-between; align-items:center; padding:0 0 42px; }
+    .brand { display:flex; align-items:center; gap:11px; font-size:20px; font-weight:800; letter-spacing:-.7px; }.mark { width:32px;height:32px;border-radius:10px;background:var(--ink);color:var(--lime);display:grid;place-items:center;font-family:Fraunces;font-size:22px; }
+    .status { font:12px 'DM Mono'; color:var(--muted); display:flex;gap:8px;align-items:center; }.dot { width:8px;height:8px;background:#76b86a;border-radius:50%; }
+    .hero { display:grid; grid-template-columns:1.05fr .95fr; gap:28px; align-items:stretch; }
+    .intro { padding:34px 18px 18px 0; }.eyebrow { font:12px 'DM Mono'; letter-spacing:.8px; color:var(--muted); text-transform:uppercase; }.intro h1 { font:700 clamp(43px,5.4vw,76px)/.96 Fraunces,serif; letter-spacing:-3.5px; margin:13px 0 20px; max-width:650px; }.intro h1 em { color:#e3654e; font-style:normal; }.intro p { color:var(--muted); max-width:490px; font-size:16px; line-height:1.7; }
+    .generator { background:var(--paper); border:1px solid var(--line); border-radius:22px; padding:27px; box-shadow:0 12px 30px #24311b0a; }.generator h2 { margin:0 0 22px; font:700 27px Fraunces; letter-spacing:-1px; }
+    label { font-size:12px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;display:block;margin:17px 0 8px; }.grid { display:grid;grid-template-columns:1fr 1fr;gap:14px; } select,input { width:100%;border:1px solid var(--line);background:#fff;padding:12px 13px;border-radius:9px;font:500 14px Manrope;color:var(--ink);outline:none; } select:focus,input:focus { border-color:#89a64e;box-shadow:0 0 0 3px #d6f26a66; }
+    .modes { display:flex;gap:8px; }.mode { flex:1;cursor:pointer; }.mode input { display:none; }.mode span { display:block;border:1px solid var(--line);padding:11px 8px;text-align:center;border-radius:9px;font-size:13px;font-weight:700; }.mode input:checked + span { background:var(--ink);color:white;border-color:var(--ink); }
+    button { border:0;cursor:pointer;font:800 14px Manrope;border-radius:10px; }.generate { margin-top:25px;width:100%;padding:14px;background:var(--lime);color:var(--ink);transition:transform .15s; }.generate:hover { transform:translateY(-2px); }.generate span { font-family:'DM Mono'; margin-left:7px; }
+    .below { margin-top:54px; display:grid; grid-template-columns:230px 1fr; gap:28px; align-items:start; }.steps { padding:20px 0; }.steps h3 { font:700 22px Fraunces;margin:0 0 22px; }.step { display:flex;gap:13px;margin:17px 0;color:var(--muted);font-size:13px;line-height:1.45; }.n { flex:0 0 25px;height:25px;border-radius:50%;background:#dce1d7;display:grid;place-items:center;font:11px 'DM Mono';color:var(--ink); }.step:first-of-type .n { background:var(--coral); }
+    #result { min-height:350px;background:var(--white);border:1px solid var(--line);border-radius:18px;overflow:hidden; }.empty { min-height:350px;display:grid;place-items:center;text-align:center;color:var(--muted);padding:40px; }.empty-icon {font:50px Fraunces;color:#bbcab1;display:block;margin-bottom:9px;}.quiz-head { padding:24px 28px 19px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:15px; }.quiz-head h2 { font:700 30px Fraunces;letter-spacing:-1px;margin:5px 0; }.tag { display:inline-block;background:var(--blue);padding:5px 9px;border-radius:100px;font:11px 'DM Mono'; }.actions { display:flex;gap:7px;align-items:start; }.action { padding:9px 11px;background:#eef1ea;color:var(--ink);font-size:12px; }.questions { padding:24px 28px 8px; }.question { margin:0 0 25px; }.q-text { font-weight:700;font-size:14px;line-height:1.55;margin-bottom:10px; }.options { display:grid;grid-template-columns:1fr 1fr;gap:7px; }.option { border:1px solid var(--line);padding:8px 10px;border-radius:7px;font-size:13px; }.letter { font:11px 'DM Mono';color:var(--muted);margin-right:7px; }.answer-key { background:#f5f2e7;padding:18px 28px 23px;border-top:1px dashed #d4d1c3;font-size:13px;line-height:1.7; }.answer-key summary { cursor:pointer;font-weight:800;margin-bottom:8px; }.answer-key p {margin:0;color:#536159;}.hidden { display:none; }
+    @media(max-width:780px){.hero,.below{grid-template-columns:1fr}.intro{padding-top:0}.intro h1{font-size:51px}.below{margin-top:30px}.steps{padding:0}.options{grid-template-columns:1fr}.shell{padding:20px 16px 45px}.quiz-head{padding:20px}.questions{padding:21px 20px 4px}.answer-key{padding:16px 20px 20px}}
+    @media print { body{background:white}.shell{max-width:none;padding:0} header,.hero,.steps,.actions{display:none}.below{display:block;margin:0}#result{border:0;border-radius:0}.answer-key{background:white} }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header><div class="brand"><div class="mark">q</div>QuizCraft</div><div class="status"><i class="dot"></i> Ready to generate</div></header>
+    <section class="hero">
+      <div class="intro"><div class="eyebrow">Academic assessment studio</div><h1>Questions that make students <em>think.</em></h1><p>Create clear, classroom-ready quizzes in seconds. Set the focus, choose a level, and get a polished set of questions with an answer key.</p></div>
+      <form class="generator" id="quizForm"><h2>Build your quiz</h2>
+        <div class="grid"><div><label for="subject">Subject</label><select id="subject"><option>Mathematics</option><option>Science</option><option>History</option><option>English</option><option>Geography</option></select></div><div><label for="level">Level</label><select id="level"><option>Middle school</option><option>Elementary</option><option>High school</option><option>Undergraduate</option></select></div></div>
+        <label for="topic">Topic or unit</label><input id="topic" required placeholder="e.g. Linear equations" value="Linear equations" />
+        <div class="grid"><div><label for="count">Questions</label><select id="count"><option value="5">5 questions</option><option value="10">10 questions</option><option value="15">15 questions</option></select></div><div><label>Question type</label><div class="modes"><label class="mode"><input type="radio" name="type" value="mcq" checked><span>Multiple choice</span></label><label class="mode"><input type="radio" name="type" value="mixed"><span>Mixed</span></label></div></div></div>
+        <button class="generate" type="submit">Generate quiz <span>→</span></button>
+      </form>
+    </section>
+    <section class="below"><aside class="steps"><h3>From idea to quiz.</h3><div class="step"><b class="n">01</b><span>Choose a subject and name the learning focus.</span></div><div class="step"><b class="n">02</b><span>Match the difficulty to your learners.</span></div><div class="step"><b class="n">03</b><span>Print, share, or refine the generated quiz.</span></div></aside>
+      <div id="result"><div class="empty"><div><span class="empty-icon">✦</span><strong>Your quiz will appear here</strong><br><small>Start with the generator above.</small></div></div></div>
+    </section>
+  </main>
+  <script>
+    const banks = {
+      Mathematics: [
+        ['What is the value of x in 3x + 5 = 20?', ['3','5','8','25'], 1, 'Subtract 5 from both sides, then divide by 3.'],
+        ['Which expression is equivalent to 4(a + 3)?', ['4a + 3','4a + 7','4a + 12','a + 12'], 2, 'Use the distributive property.'],
+        ['A line has a slope of 2 and passes through (0, −1). What is its equation?', ['y = 2x − 1','y = 2x + 1','y = x − 1','y = −2x − 1'], 0, 'The y-intercept is −1.'],
+        ['Solve: 2(x − 4) = 14.', ['x = 3','x = 7','x = 11','x = 18'], 2, 'Divide by 2 first, then add 4.'],
+        ['Which ordered pair satisfies y = 3x + 2?', ['(1, 3)','(2, 8)','(0, 3)','(3, 8)'], 1, 'Substitute x = 2: 3(2) + 2 = 8.']
+      ],
+      Science: [
+        ['Which organelle is primarily responsible for cellular respiration?', ['Nucleus','Mitochondrion','Ribosome','Vacuole'], 1, 'Mitochondria release usable energy from food.'],['What is the chemical symbol for sodium?', ['So','Sd','Na','S'], 2, 'Na comes from the Latin word natrium.'],['Which force pulls objects toward Earth?', ['Magnetism','Friction','Gravity','Tension'], 2, 'Gravity attracts objects with mass.'],['What happens to particles when a substance is heated?', ['They stop moving','They move faster','They disappear','They become heavier'], 1, 'Heating increases particle kinetic energy.'],['Plants take in which gas for photosynthesis?', ['Oxygen','Nitrogen','Carbon dioxide','Hydrogen'], 2, 'Carbon dioxide is used to make glucose.'] ],
+      History: [
+        ['Which document begins with “We the People”?', ['Declaration of Independence','U.S. Constitution','Magna Carta','Bill of Rights'], 1, 'It is the opening phrase of the Constitution.'],['The Renaissance began in which country?', ['France','England','Italy','Spain'], 2, 'Italian city-states were early centers of Renaissance culture.'],['What was a major purpose of the Silk Road?', ['Religious conquest','Trade between regions','Building railways','Political elections'], 1, 'It connected trade networks across Asia and Europe.'],['Which civilization built Machu Picchu?', ['Maya','Aztec','Inca','Roman'], 2, 'Machu Picchu was built by the Inca in Peru.'],['What invention helped spread ideas rapidly in Europe after 1450?', ['Steam engine','Printing press','Compass','Telephone'], 1, 'Movable-type printing made books far more available.'] ],
+      English: [
+        ['Which word is an adjective in “The brilliant student solved the puzzle”?', ['student','solved','brilliant','puzzle'], 2, '“Brilliant” describes the noun student.'],['What is the main purpose of a thesis statement?', ['To list sources','To state an essay’s central claim','To add dialogue','To define every word'], 1, 'A thesis gives the reader the main argument or focus.'],['Which sentence uses correct subject-verb agreement?', ['The team are ready.','The team is ready.','The team be ready.','The team were ready.'], 1, 'A collective noun is commonly singular when acting as one unit.'],['A comparison using “like” or “as” is called a:', ['Metaphor','Simile','Hyperbole','Alliteration'], 1, 'A simile signals a comparison with like or as.'],['Which is a synonym for “concise”?', ['Wordy','Brief','Confusing','Ancient'], 1, 'Concise writing uses few words effectively.'] ],
+      Geography: [
+        ['What is the largest ocean on Earth?', ['Atlantic','Indian','Arctic','Pacific'], 3, 'The Pacific covers more area than all the land combined.'],['Which imaginary line divides Earth into Northern and Southern Hemispheres?', ['Prime Meridian','Equator','Tropic of Cancer','International Date Line'], 1, 'The Equator lies at 0° latitude.'],['A climate with long, cold winters and short summers is typical of:', ['Tundra','Desert','Tropical rainforest','Savanna'], 0, 'Tundra regions have very low temperatures and short growing seasons.'],['Which continent has the most countries?', ['Asia','Africa','Europe','South America'], 1, 'Africa has 54 recognized sovereign states.'],['What is a delta?', ['A mountain peak','Land formed by river sediment at its mouth','An underground cave','A desert wind'], 1, 'Sediment deposits build outward where a river meets a sea or lake.'] ]
+    };
+    const letters=['A','B','C','D'];
+    function makeQuiz(e){ e.preventDefault(); const subject=subjectEl.value, topic=topicEl.value.trim(), level=levelEl.value, count=+countEl.value, type=document.querySelector('input[name=type]:checked').value; const source=banks[subject]; const items=Array.from({length:count},(_,i)=>source[i%source.length]);
+      const questionHTML=items.map((q,i)=>{ const isShort=type==='mixed'&&i%3===2; return `<article class="question"><div class="q-text">${i+1}. ${isShort ? `In one or two sentences, explain: ${q[0]}` : q[0]}</div>${isShort?'<div style="height:45px;border-bottom:1px solid #bcc6bb"></div>':`<div class="options">${q[1].map((x,j)=>`<div class="option"><span class="letter">${letters[j]}</span>${x}</div>`).join('')}</div>`}</article>`}).join('');
+      const answers=items.map((q,i)=>`${i+1}. ${type==='mixed'&&i%3===2?'See explanation':letters[q[2]]+' — '+q[1][q[2]]}`).join(' &nbsp; · &nbsp; ');
+      result.innerHTML=`<div class="quiz-head"><div><span class="tag">${subject} · ${level}</span><h2>${topic} quiz</h2><small style="color:var(--muted)">${count} questions · Generated for classroom use</small></div><div class="actions"><button class="action" onclick="copyQuiz()">Copy</button><button class="action" onclick="window.print()">Print</button></div></div><div class="questions">${questionHTML}</div><details class="answer-key"><summary>Answer key</summary><p>${answers}</p></details>`; result.scrollIntoView({behavior:'smooth',block:'start'}); }
+    function copyQuiz(){ navigator.clipboard.writeText(result.innerText); const b=document.querySelector('.action'); b.textContent='Copied!'; setTimeout(()=>b.textContent='Copy',1400); }
+    const subjectEl=document.getElementById('subject'),topicEl=document.getElementById('topic'),levelEl=document.getElementById('level'),countEl=document.getElementById('count'),result=document.getElementById('result'); document.getElementById('quizForm').addEventListener('submit',makeQuiz);
+  </script>
+</body>
+</html>
